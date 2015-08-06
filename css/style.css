@@ -1,0 +1,122 @@
+html, body{
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	width: 100%;
+	background-color: #eee;
+}
+
+#container{
+	width: 580px;
+	height: 450px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -225px;
+	margin-left: -293px;
+	border: 3px solid #000;
+	border-radius: 15px;
+	overflow: hidden;
+}
+
+#play-button{
+	display: inline-block;
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	background: url(../images/play.png) no-repeat center center;
+}
+
+#pause-button{
+	display: none;
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	background: url(../images/pause.png) no-repeat center center;
+}
+#song-descrip span{
+	display: inline-block;
+	width: 470px;
+	max-height: 32px;
+	overflow: hidden;
+}
+#song-descrip{
+	display: inline-block;
+	position: absolute;
+	overflow: hidden;
+	top: 5px;
+	left: 110px;
+	width: 470px;
+	height: 80px;
+	text-align: center;
+	font: .8em Arial, sans-serif;
+}
+#song-descrip span{
+	margin-bottom: 10px;
+}
+
+#song-descrip #artist{
+	font-weight: 600;
+}
+
+#song-descrip #name{
+	font-size: .9em;
+}
+
+#equalizer-btns{
+	position: absolute;
+	width: 578px;
+	height: 38px;
+	top: 110px;
+}
+
+#equalizer-btns span{
+	position: absolute;
+	top: 11px;
+	left: 13px;
+	font: 1.1em Arial, sans-serif;
+}
+
+#equalizer-btns button{
+	display: inline-block;
+	float: right;
+	margin: 5px 5px 0 5px;
+	width: 87px;
+	height: 28px;
+	background-color: #ddd;
+	border-width: 0;
+}
+
+#visualizer{
+	display: inline-block;
+	position: absolute;
+	top: 160px;
+	width: 580px;
+	height: 160px;
+}
+
+#move-here{
+	position: absolute;
+	border: 5px dashed #000;
+	border-radius: 15px;
+	width: 570px;
+	height: 110px;
+	top: 330px;
+	font: 1.1em Arial, sans-serif;
+}
+
+#move-here span{
+	position: absolute;
+	width: 570px;
+	top: 45px;
+	text-align: center;
+}
+
+#file{
+	position: absolute;
+	top: 330px;
+	opacity: 0;
+	width: 580px;
+	height: 120px;
+	background-color: #fce;
+}

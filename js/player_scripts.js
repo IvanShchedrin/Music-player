@@ -228,7 +228,7 @@ window.onload = function(){
             bufferGlobal = buffer;
             // создаем источник звука и помещаем в него загруженный буфер песни
             source = context.createBufferSource();
-            source.buffer = buffer;
+            source.buffer = bufferGlobal;
             //создание объекта ScriptProcessor
             //аргументы: длина буфера, количество входящих каналов, количество исходящих каналов
             //чем больше буфер - тем меньшее число раз будет вызыван код обработки,
@@ -253,10 +253,6 @@ window.onload = function(){
                 for (channel = 0; channel < channelsLen; channel++) {  
 
                     var inputData = inputBuffer.getChannelData(channel);
-                    var outputData = outputBuffer.getChannelData(channel);
-
-                    // устанавливаем выходные данные = входным
-                    outputData.set(inputData);
 
                     // микшируем в монобуфер все каналы
                     for (sample = 0; sample < sampleLen; sample++) 
@@ -264,6 +260,7 @@ window.onload = function(){
                 }
                 vizualize(mono);
             };
+            
             // создаем получатель звука (колонки) и коннектим его к буферу-источнику
             destination = context.destination;
             source.connect(context.destination);
@@ -275,7 +272,6 @@ window.onload = function(){
             filterNode.connect(destination);
             // запускаем и меняем кнопки
             source.start(0);
-
             $("#play-button").css('display', 'none');
             $("#pause-button").css('display', 'inline-block');
             // выводим имя файла в текстовое поле

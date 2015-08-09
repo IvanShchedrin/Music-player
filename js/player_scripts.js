@@ -10,6 +10,9 @@ var title = "Unknown title",
     artist = "Unknown artist",
     name = "";
 
+var startOffset = 0,
+    startTime = 0;
+
 // создаем context и фильтр
 window.addEventListener("load", function() { 
 	try {
@@ -22,13 +25,50 @@ window.addEventListener("load", function() {
 
 }, false);
 
+// дописать функцию
+function setEqualizer(type, freq, gain, q){
+
+}
+
+function updateMetaData(file) {
+    ID3.loadTags(file.name, function () {
+            tags = ID3.getAllTags(file.name);
+            title = tags.title || "Unknown title";
+            artist = tags.artist || "Unknown artist";
+            $("#title").text(title);
+            $("#artist").text(artist);
+
+            if ("picture" in tags) {
+                var cover = tags.picture;
+                var base64String = "";
+                for (var i = 0; i < cover.data.length; i++) {
+                    base64String += String.fromCharCode(cover.data[i]);
+                }
+                $("#cover").hide();
+                $("#cover").attr("src", "data:" + cover.format + ";base64," + window.btoa(base64String));
+                $("#cover").fadeIn(1000);
+
+            } else {
+                $("#cover").hide();
+                $("#cover").attr("src", "images/album.png");
+                $("#cover").fadeIn(1000);
+            }
+        },
+        
+        {
+            tags: ["artist", "title", "picture"],
+            dataReader: FileAPIReader(file)
+        });
+}
+
 $(document).ready(function(){
 
     // обработка нажания на кнопку Play
 	$("#play-button").click(function(){
         if (source){
             // прячем play и показываем stop
-            $("#play-button").css('display', 'none');
+            $(this).css('display', 'none');
+            $("#stop-button").css('display', 'inline-block');
             $("#pause-button").css('display', 'inline-block');
 
             // создаем источник звука и помещаем в него загруженный буфер песни
@@ -44,6 +84,13 @@ $(document).ready(function(){
             source.connect(filterNode);
             filterNode.connect(destination);
 
+            startTime = context.currentTime;
+
+            //gainNode = context.createGain();
+            //gainNode.gain.value = $("#volume").val();
+            //source.connect(gainNode);
+            //gainNode.connect(destination);
+
             source.start(0);
         } else {
             $("#name").text("Файл еще не загружен...");
@@ -51,11 +98,46 @@ $(document).ready(function(){
 	});
 
     // обработка нажания на кнопку Stop
-	$("#pause-button").click(function(){
+	$("#stop-button").click(function(){
 		$("#play-button").css('display', 'inline-block');
-		$("#pause-button").css('display', 'none');
+		$(this).css('display', 'none');
+        $("#resume-button").css('display', 'none');
+        $("#pause-button").css('display', 'none');
+        startOffset = 0;
+        startTime = 0;
         source.stop(0);
 	});
+
+    $("#pause-button").click(function(){
+        $("#play-button").css('display', 'none');
+        $("#stop-button").css('display', 'inline-block');
+        $("#resume-button").css('display', 'inline-block');
+        $(this).css('display', 'none');
+        source.stop();
+        startOffset += context.currentTime - startTime;
+    });
+
+    $("#resume-button").click(function(){
+        $("#play-button").css('display', 'none');
+        $("#stop-button").css('display', 'inline-block');
+        $("#pause-button").css('display', 'inline-block');
+        $(this).css('display', 'none');
+
+        source = context.createBufferSource();
+        source.buffer = bufferGlobal;
+        // создаем получатель звука (колонки) и коннектим его к буферу-источнику
+        destination = context.destination;
+        source.connect(destination);
+        // подключаем визуализатор
+        source.connect(sp);
+        sp.connect(context.destination);
+        // подключаем фильтр
+        source.connect(filterNode);
+        filterNode.connect(destination);
+        
+        startTime = context.currentTime;
+        source.start(0, startOffset % bufferGlobal.duration);
+    });
 
     /* Параметры для настройки фильтра:
     *   type - тип фильтра (lowpass – 1, highpass – 2, bandpass – 3, 
@@ -65,6 +147,7 @@ $(document).ready(function(){
     *   Q.value -  – (добротность) – ширина полосы вокруг выбранной частоты, к которой будет 
     *           применяться усиление или ослабление. Чем выше значение Q, тем уже полоса. Чем ниже – тем шире.
     */
+
 
     // установка фильтра к переметрам Pop
     $("#equalizer-btns #Pop").click(function(){
@@ -148,10 +231,10 @@ $(document).ready(function(){
             filterNode = null;
             filterNode = context.createBiquadFilter();
 
-            filterNode.type = 6;
-            filterNode.frequency.value = 950;
-            filterNode.Q.value = 0.2;
-            filterNode.gain.value = 12;
+            filterNode.type = "lowpass";
+            filterNode.frequency.value = 0;
+            filterNode.Q.value = 0;
+            filterNode.gain.value = -1;
 
             source.connect(filterNode);
             filterNode.connect(destination);
@@ -169,6 +252,10 @@ $(document).ready(function(){
             filterNode.disconnect(destination);
             filterNode = null;
             filterNode = context.createBiquadFilter();
+
+            filterNode.type = 1;
+            filterNode.frequency.value = 0;
+            filterNode.Q.value = 0;
 
             source.connect(filterNode);
             filterNode.connect(destination);
@@ -190,11 +277,12 @@ window.onload = function(){
     canvas.ctx = canvas.getContext( "2d" );
     canvas.ctx.strokeStyle = "#000";
     canvas.ctx.lineWidth = 2;
-    canvas.ctx.fillStyle = "#eee";
+    canvas.ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
     canvas.ctx.fillRect( 0, 0, canvasW, canvasH );
 
     // функция отрисовки линий waveform
     function vizualize(sample) {
+        canvas.ctx.clearRect(0, 0, canvas.width, canvas.height);
         canvas.ctx.fillRect( 0, 0, canvasW, canvasH );
         canvas.ctx.beginPath();
  
@@ -270,9 +358,13 @@ window.onload = function(){
             // подключаем фильтр
             source.connect(filterNode);
             filterNode.connect(destination);
+
+            startTime = context.currentTime;
+
             // запускаем и меняем кнопки
             source.start(0);
             $("#play-button").css('display', 'none');
+            $("#stop-button").css('display', 'inline-block');
             $("#pause-button").css('display', 'inline-block');
             // выводим имя файла в текстовое поле
             $("#name").text(name);
@@ -292,22 +384,7 @@ window.onload = function(){
 
         // функция обработки события загрузки файла
         reader.onload = function (e) {
-            /* работа с бинарными данными (https://github.com/jDataView/jDataView)
-            *   используем для вытаскивания мета-данных из файла
-            *   поддерживаются только ID3v1 и ID3v2 теги
-            */
-            var dv = new jDataView(this.result);
-            // забираем мета-данные и проставляем в форму
-            if (dv.getString(3, dv.byteLength - 128) == 'TAG') {
-                title = dv.getString(30, dv.tell());
-                artist = dv.getString(30, dv.tell());
-                $("#title").text(title);
-                $("#artist").text(artist);
-            } else {
-                $("#title").text("Unknown title");
-                $("#artist").text("Unknown artist");
-            }
-
+            updateMetaData(selFile);
             then(e.target.result);
         };
 

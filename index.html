@@ -7,15 +7,23 @@
 	<script type="text/javascript" src="http://yastatic.net/jquery/2.1.4/jquery.min.js"></script>
 	<script type="text/javascript" src="http://jdataview.github.io/dist/jdataview.js"></script>
 	<script type="text/javascript" src="js/player_scripts.js"></script>
+	<script type="text/javascript" src="js/id3-minimized.js"></script>
 </head>
 <body>
 	<div id="container">
+		<img id="cover" src="images/album.png">
 		<div id="play-button"></div>
 		<div id="pause-button"></div>
+		<div id="stop-button"></div>
+		<div id="resume-button"></div>
 		<div id="song-descrip">
 			<span id="title"></span><br>
 			<span id="artist"></span><br>
-			<span id="name">Для воспроизведения перетащите в выделенную область файл </span>
+			<span id="name"></span>
+		</div>
+		<span id="timer">00:12/04.53</span>
+		<div id="song-jump-box">
+			<input id="song-jump" type="range" min="0" max="1000" step="0.5" value="20">
 		</div>
 		<div id="equalizer-btns">
 			<span>Equalizer:</span>

@@ -8,35 +8,66 @@ html, body{
 
 #container{
 	width: 580px;
-	height: 450px;
+	height: 580px;
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	margin-top: -225px;
-	margin-left: -293px;
+	margin-top: -290px;
+	margin-left: -290px;
 	border: 3px solid #000;
 	border-radius: 15px;
 	overflow: hidden;
+	background-size: 100%;
 }
-
+#cover{
+	position: absolute;
+	display: inline-block;
+	width: 580px;
+	height: 580px;
+	opacity: .7;
+}
 #play-button{
 	display: inline-block;
 	position: absolute;
-	width: 100px;
-	height: 100px;
+	width: 80px;
+	height: 80px;
+	top: 15px;
+	left: 10px;
 	background: url(../images/play.png) no-repeat center center;
 }
-
+#stop-button{
+	display: none;
+	position: absolute;
+	width: 80px;
+	height: 80px;
+	top: 15px;
+	left: 10px;
+	background: url(../images/stop.png) no-repeat center center;
+}
 #pause-button{
 	display: none;
 	position: absolute;
-	width: 100px;
-	height: 100px;
+	width: 80px;
+	height: 80px;
+	left: 90px;
+	top: 15px;
 	background: url(../images/pause.png) no-repeat center center;
+}
+#resume-button{
+	display: none;
+	position: absolute;
+	width: 80px;
+	height: 80px;
+	left: 90px;
+	top: 15px;
+	background: url(../images/play.png) no-repeat center center;
+}
+#resume-button:hover, #pause-button:hover, #stop-button:hover, #play-button:hover{
+	opacity: .7;
 }
 #song-descrip span{
 	display: inline-block;
-	width: 470px;
+	width: 410px;
 	max-height: 32px;
 	overflow: hidden;
 }
@@ -44,39 +75,60 @@ html, body{
 	display: inline-block;
 	position: absolute;
 	overflow: hidden;
-	top: 5px;
-	left: 110px;
-	width: 470px;
+	padding: 5px;
+	top: 10px;
+	left: 180px;
+	width: 380px;
 	height: 80px;
 	text-align: center;
-	font: .8em Arial, sans-serif;
+	font: bolder 1em Arial, sans-serif;
+	background-color: rgba(0, 0, 0, 0.2);
+	border-radius: 15px;
 }
-#song-descrip span{
-	margin-bottom: 10px;
-}
-
 #song-descrip #artist{
-	font-weight: 600;
+	font-weight: 800;
 }
 
 #song-descrip #name{
 	font-size: .9em;
 }
-
+#timer{
+	position: absolute;
+	display: inline-block;
+	padding: 5px 10px;
+	top: 118px;
+	left: 60px;
+	font: 800 .8em Arial, sans-serif;
+	border-radius: 15px;
+	background-color: rgba(0, 0, 0, 0.2);
+}
+#song-jump-box{
+	position: absolute;
+	top: 118px;
+	left: 180px;
+	width: 390px;
+	border-radius: 15px;
+	background-color: rgba(0, 0, 0, 0.2);
+}
+#song-jump{
+	margin: 4px 0 0 10px;
+	width: 370px;
+}
 #equalizer-btns{
 	position: absolute;
 	width: 578px;
 	height: 38px;
-	top: 110px;
+	top: 160px;
 }
-
 #equalizer-btns span{
 	position: absolute;
-	top: 11px;
-	left: 13px;
-	font: 1.1em Arial, sans-serif;
+	padding: 6px 10px;
+	top: 5px;
+	left: 10px;
+	border-radius: 15px;
+	background-color: rgba(0, 0, 0, 0.2);
+	font: 600 .8em Arial, sans-serif;
 }
-
 #equalizer-btns button{
 	display: inline-block;
 	float: right;
@@ -85,38 +137,39 @@ html, body{
 	height: 28px;
 	background-color: #ddd;
 	border-width: 0;
+	border-radius: 15px;
 }
-
+#equalizer-btns button:hover, #equalizer-btns span:hover, #timer:hover, #song-jump-box:hover, #song-descrip:hover{
+	background-color: rgba(0, 0, 0, 0.9);
+	color: #fff;
+}
 #visualizer{
 	display: inline-block;
 	position: absolute;
-	top: 160px;
+	top: 210px;
 	width: 580px;
-	height: 160px;
+	height: 150px;
 }
-
 #move-here{
 	position: absolute;
 	border: 5px dashed #000;
-	border-radius: 15px;
+	border-radius: 10px;
 	width: 570px;
-	height: 110px;
-	top: 330px;
+	height: 190px;
+	top: 380px;
 	font: 1.1em Arial, sans-serif;
 }
-
 #move-here span{
 	position: absolute;
 	width: 570px;
-	top: 45px;
+	top: 85px;
 	text-align: center;
 }
-
 #file{
 	position: absolute;
-	top: 330px;
+	top: 380px;
 	opacity: 0;
 	width: 580px;
-	height: 120px;
+	height: 200px;
 	background-color: #fce;
 }

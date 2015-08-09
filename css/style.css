@@ -140,7 +140,7 @@ html, body{
 	border-radius: 15px;
 }
 #equalizer-btns button:hover, #equalizer-btns span:hover, #timer:hover, #song-jump-box:hover, #song-descrip:hover{
-	background-color: rgba(0, 0, 0, 0.9);
+	background-color: rgba(0, 0, 0, 0.8);
 	color: #fff;
 }
 #visualizer{

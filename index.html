@@ -6,36 +6,49 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script type="text/javascript" src="http://yastatic.net/jquery/2.1.4/jquery.min.js"></script>
 	<script type="text/javascript" src="http://jdataview.github.io/dist/jdataview.js"></script>
+	<script type="text/javascript" src="http://yastatic.net/jquery-ui/1.11.2/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="js/player_scripts.js"></script>
 	<script type="text/javascript" src="js/id3-minimized.js"></script>
 </head>
 <body>
 	<div id="container">
-		<img id="cover" src="images/album.png">
-		<div id="play-button"></div>
-		<div id="pause-button"></div>
-		<div id="stop-button"></div>
-		<div id="resume-button"></div>
+		<a href="https://github.com/oktava6/Music-player" target="_blank" id="cover-link">
+			<img id="cover" src="images/album.png">
+		</a>
 		<div id="song-descrip">
 			<span id="title"></span><br>
-			<span id="artist"></span><br>
+			<a href="about:blank" target="_blank" id="artist-link">
+				<span id="artist"></span><br>
+			</a>
 			<span id="name"></span>
 		</div>
-		<span id="timer">00:12/04.53</span>
-		<div id="song-jump-box">
-			<input id="song-jump" type="range" min="0" max="1000" step="0.5" value="20">
-		</div>
-		<div id="equalizer-btns">
-			<span>Equalizer:</span>
-			<button id="Pop">Pop</button>
-			<button id="Rock">Rock</button>
-			<button id="Jazz">Jazz</button>
-			<button id="Classic">Classic</button>
-			<button id="Normal">Normal</button>
-		</div>
+		<div id="pause-button"></div>
+		<div id="resume-button"></div>
+		<div id="wait-button"></div>
 		<canvas id="visualizer"></canvas>
-		<div id="move-here"><span>Перетащите музыкальный файл сюда или кликните для выбора</span></div>
-		<input type="file" id="file">
+		<div id="manualing">
+			<span id="timer"></span>
+			<div id="songJump">
+				<span id="progress">&nbsp;</span>
+			</div>
+			<div id="equalizer-btns">
+				<button id="Pop">Pop</button>
+				<button id="Rock">Rock</button>
+				<button id="Jazz">Jazz</button>
+				<button id="Classic">Classic</button>
+				<button id="Normal">Normal</button>
+			</div>
+			<span id="about">i</span>
+		</div>
+		<div id="drag-me">
+			<span>drag me!</span>
+		</div>
+		<div id="loading"></div>
+		<div id="move-here">
+			<span>Перетащите музыкальный файл сюда</span><span>или</span><span>кликните для выбора файла</span>
+		</div>
+		<input type="file" id="file" accept="audio/*">
+		<div id="about-box"><hr>Щедрин Иван<br>2015</div>
 	</div>
 </body>
 </html>

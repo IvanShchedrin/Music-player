@@ -20,6 +20,8 @@ $(document).ready(function() {
 	} catch(e) {
 		alert("Web Audio API is not supported in this browser");
 	}
+    
+    filterNode = context.createBiquadFilter();
 
 	$pausebtn = $("#pause-button");
 	$resumebtn = $("#resume-button");
@@ -387,7 +389,6 @@ $(window).load(function(){
             */
             sp = context.createScriptProcessor ? context.createScriptProcessor( 512, 2, 2 ) : context.createJavaScriptNode( 512, 2, 2 );
             sp.onaudioprocess = audioProcess;
-            filterNode = context.createBiquadFilter();
 
             playSound();
 

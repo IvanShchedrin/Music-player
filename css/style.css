@@ -84,7 +84,7 @@ html, body{
 	width: 100px;
 	height: 100px;
 	left: 400px;
-	background: url(../images/wait.png) no-repeat center center;
+	background: url(../images/btns.png) -100px -100px no-repeat;
 }
 #pause-button{
 	display: none;
@@ -92,7 +92,7 @@ html, body{
 	width: 100px;
 	height: 100px;
 	left: 400px;
-	background: url(../images/pause.png) no-repeat center center;
+	background: url(../images/btns.png) 0 -100px no-repeat;
 }
 #resume-button{
 	display: none;
@@ -100,7 +100,7 @@ html, body{
 	width: 100px;
 	height: 100px;
 	left: 400px;
-	background: url(../images/play.png) no-repeat center center;
+	background: url(../images/btns.png) -100px 0 no-repeat;
 }
 #equalizer-btns{
 	position: absolute;
@@ -148,7 +148,7 @@ html, body{
 	width: 100px;
 	height: 60px;
 	top: 380px;
-	background: url(../images/drag-me.png) no-repeat center center;
+	background: url(../images/btns.png) 2px -17px no-repeat;
 	cursor: move;
 }
 #drag-me span{

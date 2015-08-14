@@ -164,7 +164,7 @@ function updateMetaData(file) {
     ID3.loadTags(file.name, function () {
 	    
 	    var artistLink = "about:blank",
-	    	coverLink = "about:blank",
+	    	coverLink = "https://music.yandex.ru/",
 	    	title = "Unknown title",
     		artist = "Unknown artist";
 

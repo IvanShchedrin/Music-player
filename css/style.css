@@ -5,6 +5,7 @@ html, body{
 	width: 100%;
 	background-color: #eee;
 }
+/* Изначально контейнер 100х100px и расположен посередине. При открытии плеера увеличиваем его скриптом */
 #container{
 	width: 100px;
 	height: 100px;
@@ -19,12 +20,14 @@ html, body{
 	border-radius: 50px;
 	background: url(../images/cont-bg.jpg) no-repeat;
 }
+/* Обложка альбома */
 #cover{
 	position: absolute;
 	display: inline-block;
 	width: 100px;
 	height: 100px;
 }
+/* Стили для области информации о песне и ее составляющих элементов */
 #song-descrip span{
 	display: inline-block;
 	width: 290px;
@@ -57,6 +60,7 @@ html, body{
 	max-height: 17px;
 	margin-top: 3px;
 }
+/* Область управление произрывателем. Вначале скрыта, открывается при начале проигрывания песни */
 #manualing{
 	position: absolute;
 	display: none;
@@ -66,6 +70,7 @@ html, body{
 	box-shadow: inset 0 0 20px 0 #222;
 	background: url(../images/manual-bg.jpg) no-repeat;
 }
+/* Отображение таймера: 00:11/04:17; */
 #timer{
 	position: absolute;
 	display: inline-block;
@@ -78,6 +83,7 @@ html, body{
 	border-radius: 10px;
 	font: bolder .85em "Open Sans", sans-serif;
 }
+/* Кнопки ожидания (отображается, пока не открыт первый файл), паузы, воспроизведения */
 #wait-button{
 	display: inline-block;
 	position: absolute;
@@ -102,6 +108,7 @@ html, body{
 	left: 400px;
 	background: url(../images/btns.png) -100px 0 no-repeat;
 }
+/* Кнопки эквалайзера */
 #equalizer-btns{
 	position: absolute;
 	width: 500px;
@@ -117,6 +124,7 @@ html, body{
 	border-width: 0;
 	border-radius: 15px;
 }
+/* Канвас с визуализацией */
 #visualizer{
 	display: inline-block;
 	position: absolute;
@@ -125,24 +133,7 @@ html, body{
 	height: 150px;
 	z-index: 2;
 }
-#move-here{
-	position: absolute;
-	padding-top: 10px;
-	width: 300px;
-	height: 70px;
-	top: 360px;
-	left: 100px;
-	border-radius: 50px;
-	background-color: #ddd;
-	box-shadow: 0 0 30px 0 #999;
-}
-#move-here span{
-	display: inline-block;
-	width: 300px;
-	font: .9em Arial, sans-serif;
-	text-align: center;
-	color: #333;
-}
+/* Информационная область drag me */
 #drag-me{
 	position: absolute;
 	width: 100px;
@@ -162,6 +153,7 @@ html, body{
 	font: bolder 0.8em Arial, sans-serif;
 	cursor: move;
 }
+/* Анимация загрузки */
 #loading{
 	position: absolute;
 	display: inline-block;
@@ -172,29 +164,37 @@ html, body{
 	opacity: 0;
 	background: url(../images/loading.gif) no-repeat center center;
 }
+/* Поле drag`n`drop. Делаем его прозрачным, чтобы не добавлять обработчик клика на область сброса */
 #file{
 	position: absolute;
-	top: 350px;
-	left: 100px;
+	top: 0;
+	left: -100px;
 	opacity: 0;
 	width: 300px;
 	height: 100px;
 	border-radius: 0 0 50px 50px;
 	cursor: pointer;
 }
-#about{
+/* Блок под file-input. Вся анимация происходит на нем */
+#move-here{
 	position: absolute;
-	padding: 5px 3px;
-	text-align: center;
-	width: 17px;
-	height: 17px;
-	left: 460px;
-	top: 210px;
-	font-weight: 800;
-	z-index: 2;
-	background-color: rgba(229, 229, 229, .7);
-	border-radius: 15px;
+	padding-top: 10px;
+	width: 300px;
+	height: 70px;
+	top: 360px;
+	left: 100px;
+	border-radius: 50px;
+	background-color: #ddd;
+	box-shadow: 0 0 30px 0 #999;
 }
+#move-here span{
+	display: inline-block;
+	width: 300px;
+	font: .9em Arial, sans-serif;
+	text-align: center;
+	color: #333;
+}
+/* Оформление события hover */
 #cover:hover, #pause-button:hover, #resume-button:hover, #wait-button:hover{
 	opacity: .7;
 }
@@ -202,6 +202,7 @@ html, body{
 	background-color: rgba(50, 50, 50, .7) !important;
 	color: #eee;
 }
+/* Полоса прогресса */
 #songJump{
 	position: absolute;
 	overflow: hidden;
@@ -219,16 +220,30 @@ html, body{
     display: inline-block;
     border-radius: 5px;
 }
+/* Оформление окошка "О плеере" */
+#about{
+	position: absolute;
+	padding: 5px 5px;
+	text-align: center;
+	width: 17px;
+	height: 17px;
+	left: 460px;
+	top: 210px;
+	font-weight: 800;
+	z-index: 2;
+	background-color: rgba(229, 229, 229, .7);
+	border-radius: 15px;
+}
 #about-box{
 	position: absolute;
-	padding: 100px 10px 0 10px;
+	padding: 10px;
 	display: none;
 	width: 250px;
-	height: 50px;
+	height: 120px;
 	top: 150px;
 	left: 125px;
 	background-color: rgba(50, 50, 50, .9);
-	border-radius: 15px;
+	border-radius: 25px;
 	box-shadow: 0 0 10px 0 #222;
 	text-align: center;
 	vertical-align: bottom;

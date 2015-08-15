@@ -3,13 +3,13 @@ var context, // web audio context
     bufferGlobal, // глобальный буфер песни, для повторного воспроизведения (создается при загрузке песни)
     destination, // получатель звука
     sp, // визуализатор waveform
-    timeFull = 0,
-    isPaused = 0,
-    canvas,
-    $pausebtn,
-    $resumebtn;
+    timeFull = 0, // полное время песни
+    isPaused = 0, // флаг паузы
+    canvas, // канвас с визуализацией
+    $pausebtn, // кнопка паузы
+    $resumebtn; // кнопка поспроизведения
 
-var startOffset = 0,
+var startOffset = 0, // переменные для сохранения времени при нажании паузы
     startTime = 0;
 
 // создаем context и фильтр
@@ -23,19 +23,24 @@ $(document).ready(function() {
     
     filterNode = context.createBiquadFilter();
 
+    // тут же инициализируем кнопки
 	$pausebtn = $("#pause-button");
 	$resumebtn = $("#resume-button");
 });
 
+// функция обработки исходяего сигнала
 function audioProcess (ape) {
 	
 	var time = 0;
+
+    // если песня воспроизводится (не пауза) меняем ползунок прогресса
     if(!isPaused){
         time = (context.currentTime - startTime + startOffset) * 1000;
         $("#timer").text(toTime(time % timeFull) + "/" + toTime(timeFull));
         $("#progress").css("width", (time * 100) / (timeFull) + "%");
     }
 
+    // если песня закончилась, то останавливаем источник звука и меняем кнопки
     if(time > timeFull){
         source.stop();
         isPaused = 1;
@@ -69,33 +74,37 @@ function audioProcess (ape) {
     vizualize(mono, canvasHh);
 }
 
+// функция воспроизведения песни
+// подключаются все необходимые буферыЮ фильтры, анализаторы и т.п.
 function playSound(){
 	$pausebtn.show(0);
     $resumebtn.hide(0);
-
+    // создание буфера и присвоение ему глабольного буфера
     source = context.createBufferSource();
     source.buffer = bufferGlobal;
-    // создаем получатель звука (колонки) и коннектим его к буферу-источнику
+    // создаем и подключаем контекст
     destination = context.destination;
     source.connect(destination);
     // подключаем визуализатор
     source.connect(sp);
     sp.connect(context.destination);
-
+    // подключаем фильтр
     source.connect(filterNode);
     filterNode.connect(context.destination);
-
+    // startTime - начальное время при воспроизведении (после паузы != 0)
     startTime = context.currentTime;
-
+    // бывает, когда startOffset меньше нуля (при манипуляции с полосой прогресса), проверяем это
     if(startOffset < 0){
         source.start(0, 1 % bufferGlobal.duration);
     } else{
         source.start(0, startOffset % bufferGlobal.duration);
     }
-
+    // меняем флаг
     isPaused = 0;
 };
 
+// функция остановки пвоспроизведения
+// выключает источник и отключает от него всё, меняем кнопки
 function stopSound(){
 	$resumebtn.show(0);
     $pausebtn.hide(0);
@@ -103,12 +112,14 @@ function stopSound(){
     isPaused = 1;
 };
 
+// визуализация открытия плеера
 function playerOpening(){
 	setTimeout(function() {
         $("#container").animate({"opacity" : "0"}, 1000); 
     }, 1000);
     setTimeout(function() {
         $("#container").css({"height" : "450px", "width" : "500px", "margin": "-225px 0 0 -250px"});
+        $("#file").css({"top" : "350px", "left" : "100px"});
     }, 2100);
     setTimeout(function() {
         $("#container").animate({"opacity" : "1"}, 1000);
@@ -116,6 +127,7 @@ function playerOpening(){
 	$("#container").draggable();
 };
 
+// инициализация канваса с визуализацией
 function initCanvas(){
 	// переменные для работы с визуализатором
     canvas = document.getElementById("visualizer");
@@ -145,28 +157,21 @@ function vizualize(sample, canvasHh) {
     canvas.ctx.stroke();
 };
 
-function setEqualizer(setting) {
-	for (var i = 0; i < 10; i++){
-        equalizerNodes[i].gain.value = equalSets[setting][i];
-        console.log(equalSets[setting][i]);
-    }
-    equalSets[0] = setting;
-    console.log(equalSets[0][0]);
-}
-
+// преобразовываем время в нормальный вид
 function toTime(ms){
     var date = new Date(null);
     date.setSeconds(ms/1000);
     return date.toISOString().substring(14, 19);
 };
 
+// обновляем метаданные
 function updateMetaData(file) {
     ID3.loadTags(file.name, function () {
 	    
-	    var artistLink = "about:blank",
-	    	coverLink = "https://music.yandex.ru/",
-	    	title = "Unknown title",
-    		artist = "Unknown artist";
+	    var artistLink = "about:blank", // ссылка на исполнителя в ya.music
+	    	coverLink = "https://music.yandex.ru/", // ссылка на альбом в ya.music
+	    	title = "Unknown title", // название песни
+    		artist = "Unknown artist"; // исполнитель
 
         tags = ID3.getAllTags(file.name);
         title = tags.title || "Unknown title";
@@ -207,8 +212,10 @@ function updateMetaData(file) {
     });
 };
 
+// события в плеере
 $(function(){
 
+    // кнопка about
     $("#about").click(function() {
         var box = $("#about-box");
         box.toggle(300);
@@ -218,23 +225,33 @@ $(function(){
         box.draggable();
     });
 
+    // кнопка pause
     $pausebtn.click(function(){
     	stopSound();
         startOffset += context.currentTime - startTime;
     });
 
+    // кнопка resume
     $resumebtn.click(function(){
         playSound();
     });
 
+    // события на области загрузки
     $("#file").on("dragenter", function(){
         $("#move-here").animate({'background-color':'#333'},300);
     });
-
     $("#file").on("dragleave", function(){
         $("#move-here").animate({'background-color':'#ddd'},300);
     });
+    $("#file").hover(function() {
+        $("#move-here").animate({"background-color" : "#333"}, 300);
+        $("#move-here span").animate({"color" : "#eee"}, 300);
+    }, function() {
+        $("#move-here").animate({"background-color" : "#ddd"}, 300);
+        $("#move-here span").animate({"color" : "#333"}, 300);
+    });
 
+    // события на полосе прогресса
     $("#songJump").click(function(e){
 
     	stopSound();
@@ -250,45 +267,37 @@ $(function(){
         playSound();
     });
 
-    $("#file").hover(function() {
-        $("#move-here").animate({"background-color" : "#333"}, 300);
-        $("#move-here span").animate({"color" : "#eee"}, 300);
-    }, function() {
-        $("#move-here").animate({"background-color" : "#ddd"}, 300);
-        $("#move-here span").animate({"color" : "#333"}, 300);
-    });
-
+    // события на кнопках эквалайзера
     $("#equalizer-btns #Pop").click(function(){
         $("#equalizer-btns button").css('background-color', 'rgba(229, 229, 229, .7)');
         $(this).css('background-color', '#aaa');
-
+        // отключаем фильтр, который подключен сейчас, создаем новый
         filterNode.disconnect(destination);
         filterNode = null;
         filterNode = context.createBiquadFilter();
-
+        // указываем параметр, к которому применяется фильтр
         filterNode.type = 4;
+        // частотф
         filterNode.frequency.value = 320;
+        // величина усиления
         filterNode.gain.value = 10;
 
         filterNode.type = 5;
         filterNode.frequency.value = 1700;
         filterNode.gain.value = -10;
+        // заново подключаем
         source.connect(filterNode);
         filterNode.connect(destination);
     });
-
     $("#equalizer-btns #Rock").click(function(){
         $("#equalizer-btns button").css('background-color', 'rgba(229, 229, 229, .7)');
         $(this).css('background-color', '#aaa');
-
         filterNode.disconnect(destination);
         filterNode = null;
         filterNode = context.createBiquadFilter();
-
         filterNode.type = 4;
         filterNode.frequency.value = 1500;
         filterNode.gain.value = -10;
-
         source.connect(filterNode);
         filterNode.connect(destination);
     });
@@ -296,19 +305,15 @@ $(function(){
     $("#equalizer-btns #Jazz").click(function(){
         $("#equalizer-btns button").css('background-color', 'rgba(229, 229, 229, .7)');
         $(this).css('background-color', '#aaa');
-
         filterNode.disconnect(destination);
         filterNode = null;
         filterNode = context.createBiquadFilter();
-
         filterNode.type = 4;
         filterNode.frequency.value = 250;
         filterNode.Q.value = 5;
-
         filterNode.type = 5;
         filterNode.frequency.value = 2000;
         filterNode.Q.value = 3;
-
         source.connect(filterNode);
         filterNode.connect(destination);
     });
@@ -316,16 +321,13 @@ $(function(){
     $("#equalizer-btns #Classic").click(function(){
         $("#equalizer-btns button").css('background-color', 'rgba(229, 229, 229, .7)');
         $(this).css('background-color', '#aaa');
-
         filterNode.disconnect(destination);
         filterNode = null;
         filterNode = context.createBiquadFilter();
-
         filterNode.type = "lowpass";
         filterNode.frequency.value = 0;
         filterNode.Q.value = 0;
         filterNode.gain.value = -1;
-
         source.connect(filterNode);
         filterNode.connect(destination);
     });
@@ -333,15 +335,12 @@ $(function(){
     $("#equalizer-btns #Normal").click(function(){
         $("#equalizer-btns button").css('background-color', 'rgba(229, 229, 229, .7)');
         $(this).css('background-color', '#aaa');
-
         filterNode.disconnect(destination);
         filterNode = null;
         filterNode = context.createBiquadFilter();
-
         filterNode.type = 1;
         filterNode.frequency.value = 0;
         filterNode.Q.value = 0;
-
         source.connect(filterNode);
         filterNode.connect(destination);
     });
@@ -350,23 +349,22 @@ $(function(){
 $(window).load(function(){
 
 	playerOpening();
+
 	initCanvas();
     
+    // функция вызывается при начале воспроизведения
     function playsound(raw) {
         context.decodeAudioData(raw, function (buffer) {
-
             // если получили пустой буфер, значит файл не прочитался - завершаем работу
             if (!buffer) {
                 $("#name").text("Невозможно прочитать файл");
                 return;
             }
-
-            // останавливаем предыдущую песню
+            // останавливаем предыдущую песню, если запущена
             if (source){
                 source.stop(0);
             }
-
-            // сбрасываем предыдущий визуализатор
+            // сбрасываем предыдущий визуализатор, если уже был создан
             if (sp){
                 sp.disconnect(destination);
                 sp = null;
@@ -374,9 +372,11 @@ $(window).load(function(){
 
             // сохраняем буфер в глобальный буфер
             bufferGlobal = buffer;
+            // сохраняем полною продолжительность песни
             timeFull = bufferGlobal.duration * 1000;
+            // т.к. проигрывается с самого начала:
             startOffset = 0;
-
+            // открываем панель управления, скрываем анимацию загрузки и кнопку ожидания
             $("#manualing").fadeIn(800);
             $("#loading").animate({'opacity':'0'},500);
             $("#wait-button").css('display', 'none');
@@ -389,7 +389,7 @@ $(window).load(function(){
             */
             sp = context.createScriptProcessor ? context.createScriptProcessor( 512, 2, 2 ) : context.createJavaScriptNode( 512, 2, 2 );
             sp.onaudioprocess = audioProcess;
-
+            // начинаем воспроизведение
             playSound();
 
         }, function (error) {
@@ -403,11 +403,10 @@ $(window).load(function(){
         var files = evt.target.files;
 
         if(files[0]){
-
+            // показываем анимацию загрузки
             $("#loading").animate({'opacity':'1'},500);
             var selFile = files[0];
             var reader = new FileReader();
-            
             // выводим имя файла в текстовое поле
             $("#name").text(selFile.name);
 
@@ -424,6 +423,5 @@ $(window).load(function(){
             reader.readAsArrayBuffer(selFile);
         }
     };
-
     document.getElementById('file').addEventListener('change', onfilechange.bind(null, playsound), false);
 });
